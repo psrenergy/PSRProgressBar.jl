@@ -2,10 +2,18 @@ function _get_time_unit(t::Float64)
     
 end
 
-function _eta_text(s1::Int, s2::Int, t1::Float64, eta_started::Bool = true)
-    if !eta_started
+function _eta_text(p::IterativeProgressBar, new_length::Int)
+    if !p.hasETA
+        return ""
+    end
+    if !p.eta_started
         return return "|ETA: --"
     end
+
+    s1 = new_length - p.current_length # length progress
+    s2 = p.maximum_length - new_length # remaining length
+    t1 = time() - p.time # time to get from p.current_length to new_length
+
     eta = floor(Int,t1*s2/s1)
     t_unit = 
         if eta < 1.0
@@ -23,8 +31,11 @@ function _eta_text(s1::Int, s2::Int, t1::Float64, eta_started::Bool = true)
     return "|ETA: $(eta)$(t_unit)"
 end
 
-function _elapsed_text(t::Float64)
-    elapsed = time() - t
+function _elapsed_text(p::AbstractProgressBar)
+    if !p.hasElapsedTime
+        return ""
+    end
+    elapsed = time() - p.start_time
 
     t_unit = 
         if elapsed < 1.0

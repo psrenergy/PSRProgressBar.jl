@@ -15,6 +15,9 @@ Base.@kwdef mutable struct IterativeProgressBar <: AbstractProgressBar
     eta_started::Bool = false
 
     hasFrame::Bool = true
+    hasPercentage::Bool = true
+    hasETA::Bool = true
+    hasElapsedTime::Bool = true
     isFinished::Bool = false
 
 end
@@ -32,11 +35,14 @@ Base.@kwdef mutable struct IncrementalProgressBar <: AbstractProgressBar
     start_time::Union{Nothing,Float64} = nothing
 
     hasFrame::Bool = true
+    hasPercentage::Bool = false
+    hasETA::Bool = false
+    hasElapsedTime::Bool = true
     isFinished = false
 
 end
 
-function _init!(p::AbstractProgressBar)
+function _header(p::AbstractProgressBar)
     @assert p.current_steps == 0
     if p.maximum_length > 2
         println("+" * "-" ^ (p.maximum_length-2) * "+")
@@ -47,7 +53,7 @@ function _init!(p::AbstractProgressBar)
 end
 
 
-function _end!(p::AbstractProgressBar)
+function _footer(p::AbstractProgressBar)
     @assert p.isFinished
     println("")
     if p.maximum_length > 2
@@ -62,14 +68,12 @@ function next!(p::IterativeProgressBar, steps::Integer = 1)
     if p.current_steps == 0
         p.start_time = time()
         p.time = time()
-        if p.hasFrame
-            _init!(p)
-        end
+        _header(p)
     end
     p.current_steps += steps
     frac = p.current_steps / p.maximum_steps
     new_length = floor(Int,p.maximum_length*frac)
-    eta = _eta_text(new_length-p.current_length, p.maximum_length-new_length, time()-p.time, p.eta_started)
+    eta = _eta_text(p, new_length)
     p.current_length = new_length
     if p.current_length == p.maximum_length
         p.isFinished = true
@@ -81,8 +85,13 @@ function next!(p::IterativeProgressBar, steps::Integer = 1)
     end    
         
     percentage = floor(Int,frac*100)
-    percentage_text = "$(percentage)%|"
-
+    percentage_text = 
+        if p.hasPercentage
+            "$(percentage)%|"
+        else
+            ""
+        end
+    
     print("\e[2K") 
     print("\e[1G")
     if !p.isFinished 
@@ -93,11 +102,11 @@ function next!(p::IterativeProgressBar, steps::Integer = 1)
         p.eta_started = true
         p.time = time()
     else
-        elapsed = _elapsed_text(p.start_time)
+        elapsed = _elapsed_text(p)
         full_progress = p.maximum_length - length(percentage_text) - length(elapsed)
         print(percentage_text*p.tick^full_progress*elapsed)
         if p.hasFrame
-            _end!(p)
+            _footer(p)
         end
     end
 
@@ -108,13 +117,13 @@ function next!(p::IncrementalProgressBar, steps::Integer = 1)
     if p.current_steps == 0
         p.start_time = time()
         if p.hasFrame
-            _init!(p)
+            _header(p)
         end
     end
     p.current_steps += steps
     frac = p.current_steps / p.maximum_steps
     new_length = floor(Int,p.maximum_length*frac)
-    elapsed = _elapsed_text(p.start_time)
+    elapsed = _elapsed_text(p)
     p.current_length = new_length
     if p.current_length == p.maximum_length
         p.isFinished = true
@@ -133,7 +142,7 @@ function next!(p::IncrementalProgressBar, steps::Integer = 1)
     print("|"*p.tick^length_ticks*" "^blank_space*elapsed)
 
     if p.isFinished && p.hasFrame
-        _end!(p)
+        _footer(p)
     end
     return nothing
 end

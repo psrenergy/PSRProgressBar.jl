@@ -1,55 +1,73 @@
-function _get_time_unit(t::Float64)
-    
+function _convert_time_unit(time::Float64)
+    t_unit = 
+        if time < 1.0
+            time = round(Int, time * 1000.0)
+            "ms"
+        elseif time > 3600.0
+            time = round(Int, time / 3600.0)
+            "h"
+        elseif time > 60.0
+            time = round(Int, time / 60.0)
+            "min"
+        else 
+            time = round(Int, time)
+            "s"
+        end
+    return "$(time)$(t_unit)"
 end
 
-function _eta_text(p::IterativeProgressBar, new_length::Int)
+function _eta_text(p::AbstractProgressBar)
     if !p.hasETA
-        return ""
+        return p.right_bar
     end
     if !p.eta_started
-        return return "|ETA: --"
+        return p.right_bar*"ETA: --"
+    end
+
+    t1 = time() - p.start_time
+    s1 = p.current_length
+    s2 = p.maximum_length - p.current_length
+
+    eta = t1*s2/s1
+
+    return p.right_bar*"ETA: $(_convert_time_unit(eta))"
+end
+
+function _eta_text(p::IterativeProgressBar, new_length::Float64)
+    if !p.hasETA
+        return p.right_bar
+    end
+    if !p.eta_started
+        return p.right_bar*"ETA: --"
+    end
+
+    if new_length ≈ p.current_length
+        return _eta_text(p)
     end
 
     s1 = new_length - p.current_length # length progress
     s2 = p.maximum_length - new_length # remaining length
     t1 = time() - p.time # time to get from p.current_length to new_length
 
-    eta = floor(Int,t1*s2/s1)
-    t_unit = 
-        if eta < 1.0
-            eta = eta * 1000.0
-            "ms"
-        elseif eta > 3600.0
-            eta = eta / 3600.0
-            "h"
-        elseif eta > 60.0
-            eta = eta / 60.0
-            "min"
-        else 
-            "s"
-        end
-    return "|ETA: $(eta)$(t_unit)"
+    eta = t1*s2/s1
+
+    return p.right_bar*"ETA: $(_convert_time_unit(eta))"
 end
 
 function _elapsed_text(p::AbstractProgressBar)
     if !p.hasElapsedTime
-        return ""
+        return p.right_bar
     end
     elapsed = time() - p.start_time
 
-    t_unit = 
-        if elapsed < 1.0
-            elapsed = elapsed * 1000.0
-            "ms"
-        elseif elapsed > 3600.0
-            elapsed = elapsed / 3600.0
-            "h"
-        elseif elapsed > 60.0
-            elapsed = elapsed / 60.0
-            "min"
-        else 
-            "s"
-        end
-    elapsed = floor(Int,elapsed)
-    return "|Time: $(elapsed)$(t_unit)"
+    return p.right_bar*"Time: $(_convert_time_unit(elapsed))"
 end
+
+function _percentage_text(p::AbstractProgressBar ,frac::Float64)
+    percentage = floor(Int,frac*100)
+    if p.hasPercentage
+        return "$(percentage)%"*p.left_bar
+    end
+    return p.left_bar
+end
+

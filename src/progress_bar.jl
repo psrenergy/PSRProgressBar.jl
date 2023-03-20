@@ -101,8 +101,9 @@ function _show_progress_bar(p::ProgressBar, l_text::String = "", r_text::String 
     if isempty(l_text) l_text = p.left_bar end
     if isempty(r_text) r_text = p.right_bar end
 
-    print("\e[2K") 
     print("\e[1G")
+    print(" \e[2K")
+
 
     full_progress = p.maximum_length - length(l_text) - length(r_text)
     length_ticks = floor(Int,full_progress*(p.current_steps/p.maximum_steps))
@@ -148,7 +149,6 @@ function next!(p::AbstractProgressBar, steps::Int = 1)
         _show_progress_bar(p, percentage_text, elapsed)
         if p.has_frame _footer(p) end
     end
-
     p.time = time()
     return nothing
 end

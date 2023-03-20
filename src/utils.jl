@@ -16,22 +16,6 @@ function _convert_time_unit(time::Float64)
     return "$(time)$(t_unit)"
 end
 
-function _eta_text(p::AbstractProgressBar)
-    if !p.has_eta
-        return p.right_bar
-    end
-    if !p.eta_started
-        return p.right_bar*"ETA: --"
-    end
-
-    t1 = time() - p.start_time
-    s1 = p.current_length
-    s2 = p.maximum_length - p.current_length
-
-    eta = t1*s2/s1
-
-    return p.right_bar*"ETA: $(_convert_time_unit(eta))"
-end
 
 function _eta_text(p::AbstractProgressBar, new_length::Float64)
     if !p.has_eta
@@ -41,15 +25,10 @@ function _eta_text(p::AbstractProgressBar, new_length::Float64)
         return p.right_bar*"ETA: --"
     end
 
-    if new_length ≈ p.current_length
-        return _eta_text(p)
-    end
-
-    s1 = new_length - p.current_length # length progress
-    s2 = p.maximum_length - new_length # remaining length
+    s2 = p.maximum_steps - p.current_steps # remaining length
     t1 = time() - p.time # time to get from p.current_length to new_length
 
-    eta = t1*s2/s1
+    eta = t1*s2
 
     return p.right_bar*"ETA: $(_convert_time_unit(eta))"
 end

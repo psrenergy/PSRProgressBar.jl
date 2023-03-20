@@ -1,5 +1,5 @@
 using Test
-import PSRProgressBar
+import PSRProgressBar: PSRProgressBar
 
 function run_pb()
     pb = PSRProgressBar.ProgressBar(maximum_steps = 10)

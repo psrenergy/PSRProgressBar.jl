@@ -2,6 +2,3 @@ name = "PSRProgressBar"
 uuid = "e78ae4d9-7c0a-4397-83ad-465eb5391708"
 authors = ["pedroripper <pedros.ripper@gmail.com>"]
 version = "0.1.0"
-
-[deps]
-Distributed = "8ba89e20-285c-5b6f-9357-94700520ee1b"

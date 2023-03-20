@@ -17,7 +17,7 @@ function _convert_time_unit(time::Float64)
 end
 
 function _eta_text(p::AbstractProgressBar)
-    if !p.hasETA
+    if !p.has_eta
         return p.right_bar
     end
     if !p.eta_started
@@ -33,8 +33,8 @@ function _eta_text(p::AbstractProgressBar)
     return p.right_bar*"ETA: $(_convert_time_unit(eta))"
 end
 
-function _eta_text(p::IterativeProgressBar, new_length::Float64)
-    if !p.hasETA
+function _eta_text(p::AbstractProgressBar, new_length::Float64)
+    if !p.has_eta
         return p.right_bar
     end
     if !p.eta_started
@@ -55,7 +55,7 @@ function _eta_text(p::IterativeProgressBar, new_length::Float64)
 end
 
 function _elapsed_text(p::AbstractProgressBar)
-    if !p.hasElapsedTime
+    if !p.has_elapsed_time
         return p.right_bar
     end
     elapsed = time() - p.start_time
@@ -65,7 +65,7 @@ end
 
 function _percentage_text(p::AbstractProgressBar ,frac::Float64)
     percentage = floor(Int,frac*100)
-    if p.hasPercentage
+    if p.has_percentage
         return "$(percentage)%"*p.left_bar
     end
     return p.left_bar

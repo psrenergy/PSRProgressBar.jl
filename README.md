@@ -4,6 +4,10 @@
     <a href="/assets/">
         <img src="/assets/logo.svg" width=400px alt="PSRProgressBar.jl" />
     </a>
+    <br>
+    <a href="https://github.com/psrenergy/PSRProgressBar.jl/actions/workflows/ci.yml">
+        <img src="https://github.com/psrenergy/PSRProgressBar.jl/actions/workflows/ci.yml/badge.svg?branch=master" alt="CI" />
+    </a>
 </div>
 
 ## Getting Started

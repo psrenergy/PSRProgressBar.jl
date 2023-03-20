@@ -61,6 +61,7 @@ function _header(p::AbstractProgressBar)
     else
         printstyled("+" ^ p.maximum_length; color = p.color)
     end
+    println("")
     return nothing
 end
 
@@ -72,6 +73,7 @@ function _footer(p::AbstractProgressBar)
     else
         printstyled("+" ^ p.maximum_length; color = p.color)
     end
+    println("")
     return nothing 
 end
 
@@ -84,13 +86,14 @@ function _show_progress_bar(p::IncrementalProgressBar, l_text::String = "", r_te
 
     
     if p.current_steps == 1
-        print(l_text*p.tick)
+        printstyled(l_text*p.tick; color = p.color)
     elseif p.has_finished
-        println(p.tick*r_text)
+        printstyled(p.tick*r_text; color = p.color)
+        println("")
     elseif length_ticks <= p.current_ticks
         return nothing    
     else
-        print(p.tick)
+        printstyled(p.tick; color = p.color)
     end
     p.current_ticks += 1
 

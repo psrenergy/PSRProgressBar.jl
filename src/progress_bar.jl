@@ -12,6 +12,8 @@ Base.@kwdef mutable struct ProgressBar <: AbstractProgressBar
 
     maximum_length::Int = 63
 
+    color::Symbol = :white
+
     start_time::Union{Nothing, Float64} = nothing
     time::Union{Nothing, Float64} = nothing
     eta_started::Bool = false
@@ -38,6 +40,8 @@ Base.@kwdef mutable struct IncrementalProgressBar <: AbstractProgressBar
 
     maximum_length::Int = 63
 
+    color::Symbol = :white
+
     start_time::Union{Nothing, Float64} = nothing
     time::Union{Nothing, Float64} = nothing
     eta_started::Bool = false
@@ -53,9 +57,9 @@ end
 function _header(p::AbstractProgressBar)
     @assert p.current_steps == 0
     if p.maximum_length > 2
-        println("+" * "-" ^ (p.maximum_length-2) * "+")
+        printstyled("+" * "-" ^ (p.maximum_length-2) * "+"; color = p.color)
     else
-        println("+" ^ p.maximum_length)
+        printstyled("+" ^ p.maximum_length; color = p.color)
     end
     return nothing
 end
@@ -64,9 +68,9 @@ end
 function _footer(p::AbstractProgressBar)
     @assert p.has_finished
     if p.maximum_length > 2
-        println("+" * "-" ^ (p.maximum_length-2) * "+")
+        printstyled("+" * "-" ^ (p.maximum_length-2) * "+"; color = p.color)
     else
-        println("+" ^ p.maximum_length)
+        printstyled("+" ^ p.maximum_length; color = p.color)
     end
     return nothing 
 end
@@ -104,9 +108,10 @@ function _show_progress_bar(p::ProgressBar, l_text::String = "", r_text::String 
     length_ticks = floor(Int,full_progress*(p.current_steps/p.maximum_steps))
     blank_space = full_progress - length_ticks
     if p.has_finished
-        println(l_text*p.tick^length_ticks*" "^blank_space*r_text)
+        printstyled(l_text*p.tick^length_ticks*" "^blank_space*r_text; color = p.color)
+        println("")
     else
-        print(l_text*p.tick^length_ticks*" "^blank_space*r_text)
+        printstyled(l_text*p.tick^length_ticks*" "^blank_space*r_text;color= p.color)
     end
 
     return nothing

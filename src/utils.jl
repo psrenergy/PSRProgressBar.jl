@@ -30,7 +30,7 @@ function _eta_text(p::AbstractProgressBar, new_length::Float64)
 
     eta = t1*s2
 
-    return p.right_bar*" ETA: $(_convert_time_unit(eta))"
+    return " ETA: $(_convert_time_unit(eta))"
 end
 
 function _elapsed_text(p::AbstractProgressBar)
@@ -39,15 +39,15 @@ function _elapsed_text(p::AbstractProgressBar)
     end
     elapsed = time() - p.start_time
 
-    return p.right_bar*" Time: $(_convert_time_unit(elapsed))"
+    return " Time: $(_convert_time_unit(elapsed))"
 end
 
 function _percentage_text(p::AbstractProgressBar ,frac::Float64)
     percentage = floor(Int,frac*100)
-    percentage_text = (" "^(3-length("$percentage")))*"$percentage" # percentage text should always have length 4
+    percentage_text = (" "^(4-length("$percentage")))*"$percentage" # percentage text should always have length 5 ( 1 for spacing + xxx%)
     if p.has_percentage
-        return percentage_text*"%"*p.left_bar
+        return percentage_text*"%"
     end
-    return p.left_bar
+    return " "^5
 end
 

@@ -57,9 +57,9 @@ end
 function _header(p::AbstractProgressBar)
     @assert p.current_steps == 0
     if p.maximum_length > 2
-        printstyled("+" * "-" ^ (p.maximum_length-2) * "+"; color = p.color)
+        printstyled("+" * "-" ^ (p.maximum_length+3) * "+"; color = p.color)
     else
-        printstyled("+" ^ p.maximum_length; color = p.color)
+        printstyled("+" ^ (p.maximum_length+5); color = p.color)
     end
     println("")
     return nothing
@@ -69,9 +69,9 @@ end
 function _footer(p::AbstractProgressBar)
     @assert p.has_finished
     if p.maximum_length > 2
-        printstyled("+" * "-" ^ (p.maximum_length-2) * "+"; color = p.color)
+        printstyled("+" * "-" ^ (p.maximum_length+3) * "+"; color = p.color)
     else
-        printstyled("+" ^ p.maximum_length; color = p.color)
+        printstyled("+" ^ (p.maximum_length+5); color = p.color)
     end
     println("")
     return nothing 
@@ -81,14 +81,13 @@ function _show_progress_bar(p::IncrementalProgressBar, l_text::String = "", r_te
     if isempty(l_text) l_text = p.left_bar end
     if isempty(r_text) r_text = p.right_bar end
 
-    full_progress = p.maximum_length - length(l_text) - length(r_text)
-    length_ticks = floor(Int,full_progress*(p.current_steps/p.maximum_steps))
+    length_ticks = floor(Int,(p.maximum_length-2)*(p.current_steps/p.maximum_steps))
 
     
     if p.current_steps == 1
-        printstyled(l_text*p.tick; color = p.color)
+        printstyled(l_text*p.left_bar*p.tick; color = p.color)
     elseif p.has_finished
-        printstyled(p.tick*r_text; color = p.color)
+        printstyled(p.tick*p.right_bar*r_text; color = p.color)
         println("")
     elseif length_ticks <= p.current_ticks
         return nothing    
@@ -105,17 +104,16 @@ function _show_progress_bar(p::ProgressBar, l_text::String = "", r_text::String 
     if isempty(r_text) r_text = p.right_bar end
 
     print("\e[1G")
-    print(" \e[2K")
+    print("\e[2K")
 
 
-    full_progress = p.maximum_length - length(l_text) - length(r_text)
-    length_ticks = floor(Int,full_progress*(p.current_steps/p.maximum_steps))
-    blank_space = full_progress - length_ticks
+    length_ticks = floor(Int,(p.maximum_length - 2)*(p.current_steps/p.maximum_steps))
+    blank_space = (p.maximum_length - 2) - length_ticks
     if p.has_finished
-        printstyled(l_text*p.tick^length_ticks*" "^blank_space*r_text; color = p.color)
+        printstyled(l_text*p.left_bar*p.tick^length_ticks*" "^blank_space*p.right_bar*r_text; color = p.color)
         println("")
     else
-        printstyled(l_text*p.tick^length_ticks*" "^blank_space*r_text;color= p.color)
+        printstyled(l_text*p.left_bar*p.tick^length_ticks*" "^blank_space*p.right_bar*r_text;color= p.color)
     end
 
     return nothing

@@ -5,6 +5,7 @@ Base.@kwdef mutable struct ProgressBar <: AbstractProgressBar
     maximum_steps::Int 
     current_length::Int = 0
     current_steps::Int = 0
+    current_ticks::Int = 0
 
     tick::String = "="
     left_bar::String = "["
@@ -24,34 +25,7 @@ Base.@kwdef mutable struct ProgressBar <: AbstractProgressBar
     has_elapsed_time::Bool = true
     has_finished::Bool = false
 
-end
-
-Base.@kwdef mutable struct IncrementalProgressBar <: AbstractProgressBar
-
-    maximum_steps::Int 
-    current_length::Int = 0
-    current_steps::Int = 0
-    
-    current_ticks::Int = 0
-
-    tick::String = "="
-    left_bar::String = "["
-    right_bar::String = "]"
-
-    maximum_length::Int = 63
-
-    color::Symbol = :white
-
-    start_time::Union{Nothing, Float64} = nothing
-    time::Union{Nothing, Float64} = nothing
-    eta_started::Bool = false
-
-    has_frame::Bool = false
-    has_percentage::Bool = false
-    has_eta::Bool = false
-    has_elapsed_time::Bool = true
-    has_finished::Bool = false
-
+    is_incremental::Bool = false
 end
 
 function _header(p::AbstractProgressBar)
@@ -77,38 +51,31 @@ function _footer(p::AbstractProgressBar)
     return nothing 
 end
 
-function _show_progress_bar(p::IncrementalProgressBar, l_text::String = "", r_text::String = "")
+function _show_progress_bar(p::AbstractProgressBar, l_text::String = "", r_text::String = "")
     if isempty(l_text) l_text = p.left_bar end
     if isempty(r_text) r_text = p.right_bar end
-
-    length_ticks = floor(Int,(p.maximum_length-2)*(p.current_steps/p.maximum_steps))
-
-    
-    if p.current_steps == 1
-        printstyled(l_text*p.left_bar*p.tick; color = p.color)
-    elseif p.has_finished
-        printstyled(p.tick*p.right_bar*r_text; color = p.color)
-        println("")
-    elseif length_ticks <= p.current_ticks
-        return nothing    
-    else
-        printstyled(p.tick; color = p.color)
-    end
-    p.current_ticks += 1
-
-    return nothing
-end
-
-function _show_progress_bar(p::ProgressBar, l_text::String = "", r_text::String = "")
-    if isempty(l_text) l_text = p.left_bar end
-    if isempty(r_text) r_text = p.right_bar end
-
-    print("\e[1G")
-    print("\e[2K")
 
 
     length_ticks = floor(Int,(p.maximum_length - 2)*(p.current_steps/p.maximum_steps))
     blank_space = (p.maximum_length - 2) - length_ticks
+
+    if p.is_incremental
+        if p.current_steps == 1
+            printstyled(l_text*p.left_bar*p.tick; color = p.color)
+        elseif p.has_finished
+            printstyled(p.tick*p.right_bar*r_text; color = p.color)
+            println("")
+        elseif length_ticks <= p.current_ticks
+            return nothing    
+        else
+            printstyled(p.tick; color = p.color)
+        end
+        p.current_ticks += 1
+        return nothing
+    end
+
+    print("\e[1G")
+    print("\e[2K")
     if p.has_finished
         printstyled(l_text*p.left_bar*p.tick^length_ticks*" "^blank_space*p.right_bar*r_text; color = p.color)
         println("")
@@ -118,6 +85,7 @@ function _show_progress_bar(p::ProgressBar, l_text::String = "", r_text::String 
 
     return nothing
 end
+
 
 
 function next!(p::AbstractProgressBar, steps::Int = 1)

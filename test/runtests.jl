@@ -10,7 +10,7 @@ function run_pb()
         @test pb.current_steps == i
     end
 
-    pb = PSRProgressBar.IncrementalProgressBar(maximum_steps = 10)
+    pb = PSRProgressBar.ProgressBar(maximum_steps = 10, is_incremental = true)
     for i in 1:10
         redirect_stdout(devnull) do 
             PSRProgressBar.next!(pb, 1)

@@ -45,7 +45,7 @@ end
 function _percentage_text(p::AbstractProgressBar ,frac::Float64)
     percentage = floor(Int,frac*100)
     percentage_text = (" "^(4-length("$percentage")))*"$percentage" # percentage text should always have length 5 ( 1 for spacing + xxx%)
-    if p.has_percentage && !p.is_incremental
+    if p.has_percentage && p.display == iterative
         return percentage_text*"%"
     end
     return " "^5

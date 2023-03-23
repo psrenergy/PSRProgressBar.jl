@@ -1,8 +1,8 @@
 abstract type AbstractProgressBar end
 
 @enum Display begin
-    iterative   = 0
-    incremental = 1
+    ITERATIVE   = 0
+    INCREMENTAL = 1
 end
 
 Base.@kwdef mutable struct ProgressBar <: AbstractProgressBar
@@ -30,7 +30,7 @@ Base.@kwdef mutable struct ProgressBar <: AbstractProgressBar
     has_elapsed_time::Bool = true
     has_finished::Bool = false
 
-    display::Display = iterative
+    display::Display = ITERATIVE
 end
 
 function _header(p::AbstractProgressBar)
@@ -64,7 +64,7 @@ function _show_progress_bar(p::AbstractProgressBar, l_text::String = "", r_text:
     length_ticks = floor(Int,(p.maximum_length - 2)*(p.current_steps/p.maximum_steps))
     blank_space = (p.maximum_length - 2) - length_ticks
 
-    if p.display == incremental
+    if p.display == INCREMENTAL
         if p.current_steps == 1
             printstyled(l_text*p.left_bar*p.tick; color = p.color)
         elseif p.has_finished

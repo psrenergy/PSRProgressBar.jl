@@ -3,16 +3,17 @@ import PSRProgressBar: PSRProgressBar
 
 function run_pb()
     pb = PSRProgressBar.ProgressBar(maximum_steps = 10)
-    for i in 1:10
-        redirect_stdout(devnull) do 
+    for i = 1:10
+        redirect_stdout(devnull) do
             PSRProgressBar.next!(pb, 1)
         end
         @test pb.current_steps == i
     end
 
-    pb = PSRProgressBar.ProgressBar(maximum_steps = 10, display = PSRProgressBar.INCREMENTAL)
-    for i in 1:10
-        redirect_stdout(devnull) do 
+    pb =
+        PSRProgressBar.ProgressBar(maximum_steps = 10, display = PSRProgressBar.INCREMENTAL)
+    for i = 1:10
+        redirect_stdout(devnull) do
             PSRProgressBar.next!(pb, 1)
         end
         @test pb.current_steps == i

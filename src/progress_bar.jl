@@ -73,17 +73,16 @@ function _show_progress_bar(
     blank_space = (p.maximum_length - 2) - length_ticks
 
     if p.display == INCREMENTAL
+        scale_ticks = round(Int,(p.maximum_length-2)/p.maximum_steps)
         if p.current_steps == 1
-            printstyled(l_text * p.left_bar * p.tick; color = p.color)
+            printstyled(l_text * p.left_bar * p.tick^scale_ticks; color = p.color)
         elseif p.has_finished
-            printstyled(p.tick * p.right_bar * r_text; color = p.color)
+            printstyled(p.tick^(p.maximum_length-2 - p.current_ticks) * p.right_bar * r_text; color = p.color)
             println("")
-        elseif length_ticks <= p.current_ticks
-            return nothing
         else
-            printstyled(p.tick; color = p.color)
+            printstyled(p.tick^scale_ticks; color = p.color)
         end
-        p.current_ticks += 1
+        p.current_ticks += scale_ticks
         return nothing
     end
 

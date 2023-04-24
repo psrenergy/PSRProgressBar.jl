@@ -13,6 +13,7 @@ Base.@kwdef mutable struct ProgressBar <: AbstractProgressBar
     current_ticks::Int = 0
 
     tick::String = "="
+    first_tick::String = ">"
     left_bar::String = "["
     right_bar::String = "]"
 
@@ -94,8 +95,15 @@ function _show_progress_bar(
 
     print("\e[1G")
     print("\e[2K")
+    if !isempty(p.first_tick) && length_ticks > 0
+        if p.has_finished
+            p.first_tick = ""
+        else
+            length_ticks -= 1
+        end
+    end
     printstyled(
-        l_text * p.left_bar * p.tick^length_ticks * " "^blank_space * p.right_bar * r_text;
+        l_text * p.left_bar * p.tick^length_ticks * p.first_tick * " "^blank_space * p.right_bar * r_text;
         color = p.color,
     )
     if p.has_finished

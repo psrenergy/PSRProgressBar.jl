@@ -73,43 +73,35 @@ function _show_progress_bar(
     blank_space = (p.maximum_length - 2) - length_ticks
 
     if p.display == INCREMENTAL
-        scale_ticks = round(Int,(p.maximum_length-2)/p.maximum_steps)
-        if p.current_steps == 1
-            printstyled(l_text * p.left_bar * p.tick^scale_ticks; color = p.color)
-        elseif p.has_finished
-            printstyled(p.tick^(p.maximum_length-2 - p.current_ticks) * p.right_bar * r_text; color = p.color)
-            println("")
-        else
-            printstyled(p.tick^scale_ticks; color = p.color)
+        if length_ticks <= p.current_ticks
+            print("")
         end
-        p.current_ticks += scale_ticks
+        if p.current_steps == 1
+            printstyled(
+                l_text * p.left_bar * p.tick^(length_ticks - p.current_ticks);
+                color = p.color,
+            )
+        else
+            printstyled(p.tick^(length_ticks - p.current_ticks); color = p.color)
+            if p.has_finished
+                printstyled(p.right_bar * r_text; color = p.color)
+                println("")
+            end
+        end
+        p.current_ticks = length_ticks
         return nothing
     end
 
     print("\e[1G")
     print("\e[2K")
+    printstyled(
+        l_text * p.left_bar * p.tick^length_ticks * " "^blank_space * p.right_bar * r_text;
+        color = p.color,
+    )
     if p.has_finished
-        printstyled(
-            l_text *
-            p.left_bar *
-            p.tick^length_ticks *
-            " "^blank_space *
-            p.right_bar *
-            r_text;
-            color = p.color,
-        )
         println("")
-    else
-        printstyled(
-            l_text *
-            p.left_bar *
-            p.tick^length_ticks *
-            " "^blank_space *
-            p.right_bar *
-            r_text;
-            color = p.color,
-        )
     end
+    p.current_ticks = length_ticks
 
     return nothing
 end

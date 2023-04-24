@@ -20,6 +20,59 @@ function run_pb()
     end
 end
 
+function test_length()
+    last_stage = 3
+    first_stage = 1
+
+    p_incremental = PSRProgressBar.ProgressBar(
+        maximum_steps = last_stage - first_stage + 1,
+        maximum_length = 72,
+        display = PSRProgressBar.INCREMENTAL,
+        color = :green,
+    )
+    p_iterative = PSRProgressBar.ProgressBar(
+        maximum_steps = last_stage - first_stage + 1,
+        maximum_length = 72,
+        display = PSRProgressBar.ITERATIVE,
+        color = :green,
+    )
+
+    for stage = first_stage:last_stage
+        redirect_stdout(devnull) do
+            PSRProgressBar.next!(p_incremental)
+            PSRProgressBar.next!(p_iterative)
+        end
+    end
+    @test p_incremental.current_ticks == p_iterative.current_ticks
+    @test p_incremental.current_ticks == p_incremental.maximum_length-2
+
+    last_stage = 104
+    first_stage = 1
+
+    p_incremental = PSRProgressBar.ProgressBar(
+        maximum_steps = last_stage - first_stage + 1,
+        maximum_length = 72,
+        display = PSRProgressBar.INCREMENTAL,
+        color = :green,
+    )
+    p_iterative = PSRProgressBar.ProgressBar(
+        maximum_steps = last_stage - first_stage + 1,
+        maximum_length = 72,
+        display = PSRProgressBar.ITERATIVE,
+        color = :green,
+    )
+
+    for stage = first_stage:last_stage
+        redirect_stdout(devnull) do
+            PSRProgressBar.next!(p_incremental)
+            PSRProgressBar.next!(p_iterative)
+        end
+    end
+    @test p_incremental.current_ticks == p_iterative.current_ticks
+    @test p_incremental.current_ticks == p_incremental.maximum_length-2
+
+end
+
 function test_convert_time()
     @test PSRProgressBar._convert_time_unit(0.1) == "100ms"
     @test PSRProgressBar._convert_time_unit(7200.0) == "2h"
@@ -28,4 +81,5 @@ function test_convert_time()
 end
 
 run_pb()
+test_length()
 test_convert_time()

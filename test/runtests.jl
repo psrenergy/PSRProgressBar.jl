@@ -1,7 +1,14 @@
 using Test
+using Aqua
+
 import PSRProgressBar: PSRProgressBar
 
-function run_pb()
+function test_aqua()
+    Aqua.test_all(PSRProgressBar)
+    return nothing
+end
+
+function test_progressbar()
     pb = PSRProgressBar.ProgressBar(maximum_steps = 10)
     for i = 1:10
         redirect_stdout(devnull) do
@@ -10,8 +17,7 @@ function run_pb()
         @test pb.current_steps == i
     end
 
-    pb =
-        PSRProgressBar.ProgressBar(maximum_steps = 10, display = PSRProgressBar.INCREMENTAL)
+    pb = PSRProgressBar.ProgressBar(maximum_steps = 10, display = PSRProgressBar.INCREMENTAL)
     for i = 1:10
         redirect_stdout(devnull) do
             PSRProgressBar.next!(pb, 1)
@@ -80,6 +86,7 @@ function test_convert_time()
     @test PSRProgressBar._convert_time_unit(10.0) == "10s"
 end
 
-run_pb()
+test_aqua()
+test_progressbar()
 test_length()
 test_convert_time()

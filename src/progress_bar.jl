@@ -65,10 +65,6 @@ function _show_progress_bar(
     if isempty(l_text)
         l_text = p.left_bar
     end
-    if isempty(r_text)
-        r_text = p.right_bar
-    end
-
 
     length_ticks = floor(Int, (p.maximum_length - 2) * (p.current_steps / p.maximum_steps))
     blank_space = (p.maximum_length - 2) - length_ticks

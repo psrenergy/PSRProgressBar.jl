@@ -50,7 +50,7 @@ function test_length()
         end
     end
     @test p_incremental.current_ticks == p_iterative.current_ticks
-    @test p_incremental.current_ticks == p_incremental.maximum_length-2
+    @test p_incremental.current_ticks == p_incremental.maximum_length - 2
 
     last_stage = 104
     first_stage = 1
@@ -75,7 +75,7 @@ function test_length()
         end
     end
     @test p_incremental.current_ticks == p_iterative.current_ticks
-    @test p_incremental.current_ticks == p_incremental.maximum_length-2
+    @test p_incremental.current_ticks == p_incremental.maximum_length - 2
 
 end
 

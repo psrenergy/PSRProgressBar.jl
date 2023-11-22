@@ -147,15 +147,6 @@ function next!(p::AbstractProgressBar, steps::Integer = 1)
 end
 
 function done!(p::AbstractProgressBar)
-    p.has_finished = true
-
-    percentage_text = _percentage_text(p, frac)
-
-    elapsed = _elapsed_text(p)
-    _show_progress_bar(p, percentage_text, elapsed)
-    if p.has_frame
-        _footer(p)
-    end
-
+    next!(p, p.maximum_steps - p.current_steps)
     return nothing
 end

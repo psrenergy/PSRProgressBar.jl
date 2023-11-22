@@ -15,7 +15,6 @@ function _convert_time_unit(time::Float64)
     return "$(time)$(t_unit)"
 end
 
-
 function _eta_text(p::AbstractProgressBar, new_length::Float64)
     if !p.has_eta
         return ""
@@ -49,4 +48,3 @@ function _percentage_text(p::AbstractProgressBar, frac::Float64)
     end
     return " "^5
 end
-

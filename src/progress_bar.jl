@@ -6,7 +6,6 @@ abstract type AbstractProgressBar end
 end
 
 Base.@kwdef mutable struct ProgressBar <: AbstractProgressBar
-
     maximum_steps::Int
     current_length::Int = 0
     current_steps::Int = 0
@@ -44,7 +43,6 @@ function _header(p::AbstractProgressBar)
     println("")
     return nothing
 end
-
 
 function _footer(p::AbstractProgressBar)
     @assert p.has_finished
@@ -109,8 +107,6 @@ function _show_progress_bar(
 
     return nothing
 end
-
-
 
 function next!(p::AbstractProgressBar, steps::Int = 1)
     if p.current_steps == 0

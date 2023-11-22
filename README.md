@@ -14,7 +14,7 @@
 
 ### Installation
 ```julia
-julia> ]add https://github.com/psrenergy/PSRProgressBar.jl#master
+julia> ]add https://github.com/psrenergy/PSRProgressBar.jl
 ```
 
 ### Ways of displaying a progress bar
@@ -29,8 +29,7 @@ The iterative progress bar keeps overwriting the same line in the terminal, upda
 The incremental progress bar does not overwrite the whole terminal line. It adds new ticks to the end of the line as it progresses.
 
 > **Note**
-> It is advised to use the incremental progress bar when yout terminal cannot overwrite the terminal line.
-
+> It is advised to use the incremental progress bar when your terminal cannot overwrite the terminal line.
 
 ## Costumizing the progress bar
 
@@ -60,22 +59,18 @@ The progress bar can be costumized by passing the following arguments to the `Pr
 
 - `has_elapsed_time`(Bool): Whether to show the elapsed time or not.
 
-
-
-
-
-
 ## Examples
 
 ```julia
 using PSRProgressBar
 
-pb = PSRProgressBar.ProgressBar(maximum_steps = 100, tick = "+", left_bar = "|", right_bar="|")
+p = PSRProgressBar.ProgressBar(maximum_steps = 100, tick = "+", left_bar = "|", right_bar="|")
 
 for i in 1:100
-    PSRProgressBar.next!(pb)
+    PSRProgressBar.next!(p)
     sleep(0.1)
 end
+PSRProgressBar.done!(p)
 ```
 
 

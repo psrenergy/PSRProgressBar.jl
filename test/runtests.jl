@@ -76,7 +76,6 @@ function test_length()
     end
     @test p_incremental.current_ticks == p_iterative.current_ticks
     @test p_incremental.current_ticks == p_incremental.maximum_length - 2
-
 end
 
 function test_convert_time()

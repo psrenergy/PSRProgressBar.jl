@@ -1,4 +1,4 @@
-function _convert_time_unit(time::Float64)
+function _convert_time_unit(time::Real)
     t_unit = if time < 1.0
         time = round(Int, time * 1000.0)
         "ms"
@@ -15,7 +15,7 @@ function _convert_time_unit(time::Float64)
     return "$(time)$(t_unit)"
 end
 
-function _eta_text(p::AbstractProgressBar, new_length::Float64)
+function _eta_text(p::AbstractProgressBar, new_length::Real)
     if !p.has_eta
         return ""
     end
@@ -40,7 +40,7 @@ function _elapsed_text(p::AbstractProgressBar)
     return " Time: $(_convert_time_unit(elapsed))"
 end
 
-function _percentage_text(p::AbstractProgressBar, frac::Float64)
+function _percentage_text(p::AbstractProgressBar, frac::Real)
     percentage = floor(Int, frac * 100)
     percentage_text = (" "^(4 - length("$percentage"))) * "$percentage" # percentage text should always have length 5 ( 1 for spacing + xxx%)
     if p.has_percentage && p.display == ITERATIVE

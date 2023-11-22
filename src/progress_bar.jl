@@ -57,8 +57,8 @@ end
 
 function _show_progress_bar(
     p::AbstractProgressBar,
-    l_text::String = "",
-    r_text::String = "",
+    l_text::AbstractString = "",
+    r_text::AbstractString = "",
 )
     if isempty(l_text)
         l_text = p.left_bar
@@ -108,7 +108,7 @@ function _show_progress_bar(
     return nothing
 end
 
-function next!(p::AbstractProgressBar, steps::Int = 1)
+function next!(p::AbstractProgressBar, steps::Integer = 1)
     if p.current_steps == 0
         p.start_time = time()
         p.time = time()
@@ -143,5 +143,19 @@ function next!(p::AbstractProgressBar, steps::Int = 1)
         end
     end
     p.time = time()
+    return nothing
+end
+
+function done!(p::AbstractProgressBar)
+    p.has_finished = true
+
+    percentage_text = _percentage_text(p, frac)
+
+    elapsed = _elapsed_text(p)
+    _show_progress_bar(p, percentage_text, elapsed)
+    if p.has_frame
+        _footer(p)
+    end
+
     return nothing
 end

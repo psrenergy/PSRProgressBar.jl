@@ -100,9 +100,7 @@ function _show_progress_bar(
         l_text * p.left_bar * p.tick^length_ticks * p.first_tick * " "^blank_space * p.right_bar * r_text;
         color = p.color,
     )
-    if p.has_finished
-        println("")
-    end
+
     p.current_ticks = length_ticks
 
     return nothing
@@ -148,5 +146,6 @@ end
 
 function done!(p::AbstractProgressBar)
     next!(p, p.maximum_steps - p.current_steps)
+    println("")
     return nothing
 end

@@ -1,6 +1,6 @@
 name = "PSRProgressBar"
 uuid = "e78ae4d9-7c0a-4397-83ad-465eb5391708"
-version = "0.1.1"
+version = "0.2.0"
 
 [deps]
 

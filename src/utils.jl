@@ -20,7 +20,7 @@ function _eta_text(p::AbstractProgressBar, new_length::Float64)
         return ""
     end
     if !p.eta_started
-        return  " ETA: --"
+        return " ETA: --"
     end
 
     s2 = p.maximum_steps - p.current_steps # remaining length
